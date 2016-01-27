@@ -1,0 +1,131 @@
+<apex:page id="pg" standardStylesheets="false" controller="ExcelExportController" 
+    contenttype="application/vnd.ms-excel#TestExport_{!TODAY()}.xls">
+{!xmlheader}
+<Workbook xmlns="urn:schemas-microsoft-com:office:spreadsheet"
+ xmlns:o="urn:schemas-microsoft-com:office:office"
+ xmlns:x="urn:schemas-microsoft-com:office:excel"
+ xmlns:ss="urn:schemas-microsoft-com:office:spreadsheet"
+ xmlns:html="http://www.w3.org/TR/REC-html40">
+<DocumentProperties xmlns="urn:schemas-microsoft-com:office:office">
+      <Author></Author>
+      <LastAuthor></LastAuthor>
+      <Company></Company>
+      <Version>1</Version>
+    </DocumentProperties>
+
+    <ExcelWorkbook xmlns="urn:schemas-microsoft-com:office:excel">
+      <WindowHeight>16000</WindowHeight>
+      <WindowWidth>20480</WindowWidth>
+      <WindowTopX>400</WindowTopX>
+      <WindowTopY>400</WindowTopY>
+      <ProtectStructure>False</ProtectStructure>
+      <ProtectWindows>False</ProtectWindows>
+    </ExcelWorkbook>
+ <Styles>
+  <Style ss:ID="Default" ss:Name="Normal">
+   <Alignment ss:Vertical="Bottom"/>
+   <Borders/>
+   <Font/>
+   <Interior/>
+   <NumberFormat/>
+   <Protection/>
+  </Style>
+  <Style ss:ID="s67">
+   <Borders>
+    <Border ss:Position="Bottom" ss:LineStyle="Double" ss:Weight="3"/>
+    <Border ss:Position="Top" ss:LineStyle="Continuous" ss:Weight="1"/>
+   </Borders>
+   <Font ss:Size="14"/>
+   <Interior ss:Color="#FFF58C" ss:Pattern="Solid"/>
+  </Style>
+  <Style ss:ID="s68">
+   <Alignment ss:Vertical="Bottom"/>
+   <Font ss:Size="12" ss:Bold="1"/>
+   <Interior ss:Color="#FFCC99" ss:Pattern="Solid"/>
+  </Style>
+  <Style ss:ID="s70">
+   <Borders>
+    <Border ss:Position="Bottom" ss:LineStyle="Double" ss:Weight="3"/>
+    <Border ss:Position="Top" ss:LineStyle="Continuous" ss:Weight="1"/>
+   </Borders>
+   <Font ss:Size="14"/>
+   <Interior ss:Color="#FFF58C" ss:Pattern="Solid"/>
+   <NumberFormat ss:Format="Percent"/>
+  </Style>
+  <Style ss:ID="s72">
+   <Alignment ss:Vertical="Top"/>
+   <Borders/>
+   <Font/>
+  </Style>
+  <Style ss:ID="s75">
+   <Alignment ss:Vertical="Top"/>
+   <NumberFormat ss:Format="0.0%"/>
+  </Style>
+ </Styles>
+ <Names>
+  <NamedRange ss:Name="Amount_Column" ss:RefersTo="=Opportunities!R2C3:R{!oppSize + 1}C3"/>
+  <NamedRange ss:Name="Name_Column" ss:RefersTo="=Opportunities!R2C1:R{!oppSize + 1}C1"/>
+  <NamedRange ss:Name="Percentage_of_Total_Column" ss:RefersTo="=Opportunities!R2C4:R{!oppSize + 1}C4"/>
+  <NamedRange ss:Name="Stage_Column" ss:RefersTo="=Opportunities!R2C2:R{!oppSize + 1}C2"/>
+  <NamedRange ss:Name="Total_Amount_Cell" ss:RefersTo="=Opportunities!R{!oppSize + 2}C3"/>
+ </Names>
+ <Worksheet ss:Name="Opportunities">
+  <Table ss:ExpandedColumnCount="4" ss:ExpandedRowCount="13" x:FullColumns="1"
+   x:FullRows="1" ss:DefaultColumnWidth="65">
+   <Column ss:AutoFitWidth="0" ss:Width="209"/>
+   <Column ss:AutoFitWidth="0" ss:Width="132"/>
+   <Column ss:AutoFitWidth="0" ss:Width="96"/>
+   <Column ss:AutoFitWidth="0" ss:Width="124"/>
+      
+   <Row ss:Height="16">
+    <Cell ss:StyleID="s68"><Data ss:Type="String">Opportunity Name</Data></Cell>
+    <Cell ss:StyleID="s68"><Data ss:Type="String">Stage</Data></Cell>
+    <Cell ss:StyleID="s68"><Data ss:Type="String">Amount</Data></Cell>
+    <Cell ss:StyleID="s68"><Data ss:Type="String">Percentage of Total</Data></Cell>
+   </Row>
+   <apex:repeat value="{!opportunities}" var="opp">
+   <Row>
+    <Cell ><Data ss:Type="String">{!opp.Name}</Data>
+        <NamedCell ss:Name="Name_Column"/></Cell>
+    <Cell ><Data ss:Type="String">{!opp.StageName}</Data>
+        <NamedCell ss:Name="Stage_Column"/></Cell>
+    <Cell ><Data ss:Type="Number">{!opp.Amount}</Data>
+        <NamedCell ss:Name="Amount_Column"/></Cell>
+    <Cell ss:StyleID="s75" ss:Formula="=IFERROR(RC[-1]/Total_Amount_Cell,0)"><Data
+      ss:Type="Number"></Data>
+        <NamedCell ss:Name="Percentage_of_Total_Column"/></Cell>
+   </Row>
+   </apex:repeat>
+   <Row ss:Height="19">
+    <Cell ss:StyleID="s67"/>
+    <Cell ss:StyleID="s67"><Data ss:Type="String">Totals</Data></Cell>
+    <Cell ss:StyleID="s67" ss:Formula="=SUM(Amount_Column)"><Data ss:Type="Number"></Data></Cell>
+    <Cell ss:StyleID="s70" ss:Formula="=SUM(Percentage_of_Total_Column)"><Data
+      ss:Type="Number"></Data></Cell>
+   </Row>
+   
+   <Row ss:Height="14"/>
+  </Table>
+  <WorksheetOptions xmlns="urn:schemas-microsoft-com:office:excel">
+   <PageLayoutZoom>0</PageLayoutZoom>
+   <Selected/>
+   <FreezePanes/>
+   <FrozenNoSplit/>
+   <SplitHorizontal>1</SplitHorizontal>
+   <TopRowBottomPane>1</TopRowBottomPane>
+   <ActivePane>2</ActivePane>
+   <Panes>
+    <Pane>
+     <Number>3</Number>
+    </Pane>
+   </Panes>
+   <ProtectObjects>False</ProtectObjects>
+   <ProtectScenarios>False</ProtectScenarios>
+  </WorksheetOptions>
+ </Worksheet>
+</Workbook>
+
+
+
+<apex:outputText value="{!endfile}" escape="false"/>
+</apex:page>
