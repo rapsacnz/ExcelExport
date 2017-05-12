@@ -125,7 +125,7 @@
  </Worksheet>
 </Workbook>
 
-
-
-<apex:outputText value="{!endfile}" escape="false"/>
+<!--this seems to not be needed anymore...
+<apex:outputText value="{!endfile}" escape="false"/>-->
+    
 </apex:page>
